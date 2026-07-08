@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: inventory
+    ports:
+      - "25433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment:
+      DB_USER: inventory
+      DB_PASS: secret
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: inventory
+      JWT_SECRET: dev-secret-change-in-prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
